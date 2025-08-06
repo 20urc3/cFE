@@ -25,15 +25,27 @@
 # These example options assume a GCC-style toolchain is used for cross compilation,
 # and uses the same warning options that are applied at the mission level.
 #
+
+#
+# arch_build_custom.cmake — only GCC gets the stringop-truncation suppression
+#
+
 add_compile_options(
     -std=c99                    # Target the C99 standard (without gcc extensions)
-    -pedantic                   # Issue all the warnings demanded by strict ISO C
+    -pedantic                   # Strict ISO C warnings
     -Wall                       # Warn about most questionable operations
     -Wstrict-prototypes         # Warn about missing prototypes
     -Wwrite-strings             # Warn if not treating string literals as "const"
-    -Wpointer-arith             # Warn about suspicious pointer operations
+    -Wpointer-arith             # Warn about suspicious pointer arithmetic
     -Werror                     # Treat warnings as errors (code should be clean)
-    -Wno-format-truncation      # Inhibit printf-style format truncation warnings
-    -Wno-stringop-truncation    # Inhibit string operation truncation warnings
+    -Wno-format-truncation      # Inhibit printf-style format-truncation warnings
 )
+
+# Only suppress stringop-truncation under GNU
+if(CMAKE_C_COMPILER_ID STREQUAL "GNU")
+  add_compile_options(
+    -Wno-stringop-truncation    # Inhibit string operation truncation warnings under GCC
+  )
+endif()
+
 
